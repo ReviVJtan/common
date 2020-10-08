@@ -835,8 +835,8 @@ public class DateUtils {
 	
 	public static class TimeMillisecond{
 		public static final Integer SECOND = 1000;
-		public static final Integer BRANCH = 60*SECOND;
-		public static final Integer HOUR = 60*BRANCH;
+		public static final Integer MINUTE = 60*SECOND;
+		public static final Integer HOUR = 60*MINUTE;
 		public static final Integer DAY = 24*HOUR;
 		public static final Integer THREE_DAYS = 3*DAY;
 		public static final Integer WEEK = 7*DAY;
