@@ -333,7 +333,7 @@ public static String getFileSuffix(String fileName) {
 	 * @return
 	 */
 	public static String getPathNotEnd(String path){
-		path = path.replaceAll("\\/?", "");
+		path = path.replaceAll("\\/$", "");
 		 
 		 return path;
 	}

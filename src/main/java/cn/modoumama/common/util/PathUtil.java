@@ -14,6 +14,7 @@ public class PathUtil {
 		savePath = StringUtils.getPathEnd(savePath);
 		String urlPath = StringUtils.getPathEnd(ConfigProperty.getProperty("file.url.path"));
 		String path = PathUtil.class.getClassLoader().getResource("/").getPath();
+		//操作系统
 		String os = System.getProperty("os.name").toLowerCase();
 		if(os.indexOf("windows")>=0){
 			path = path.replaceAll("^/", "");
