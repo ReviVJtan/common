@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.modoumama</groupId>
     <artifactId>common</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<packaging>jar</packaging>
     <name>common</name>
     <url>http://maven.apache.org/</url>
@@ -63,6 +63,19 @@
 		  <groupId>com.alidayu</groupId>
 		  <artifactId>sms</artifactId>
 		  <version>20160607</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>com.aliyun</groupId>
+		  <artifactId>core</artifactId>
+		  <version>3.2.3</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>com.aliyun</groupId>
+		  <artifactId>sms</artifactId>
+		  <version>1.0.0</version>
+		  <classifier>SANPSHOT</classifier>
 		</dependency>
 		
 		<dependency>
@@ -159,6 +172,13 @@
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
+        </dependency>
+        
+        <!-- hibernate验证（与hibernate框架独立） -->
+		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.3.2.Final</version>
         </dependency>
     </dependencies>
     <!-- 发不到私服 -->
