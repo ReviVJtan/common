@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.modoumama</groupId>
     <artifactId>common</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.1</version>
 	<packaging>jar</packaging>
     <name>common</name>
     <url>http://maven.apache.org/</url>
@@ -61,19 +61,19 @@
 		
 		<dependency>
 		  <groupId>com.alidayu</groupId>
-		  <artifactId>sms</artifactId>
+		  <artifactId>alidayu-sms</artifactId>
 		  <version>20160607</version>
 		</dependency>
 		
 		<dependency>
 		  <groupId>com.aliyun</groupId>
-		  <artifactId>core</artifactId>
+		  <artifactId>aliyun-core</artifactId>
 		  <version>3.2.3</version>
 		</dependency>
 		
 		<dependency>
 		  <groupId>com.aliyun</groupId>
-		  <artifactId>sms</artifactId>
+		  <artifactId>aliyun-sms</artifactId>
 		  <version>1.0.0</version>
 		  <classifier>SANPSHOT</classifier>
 		</dependency>
