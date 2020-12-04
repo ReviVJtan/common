@@ -39,29 +39,6 @@ public class Request implements Serializable {
 	/** 参数params */
 	private Map<String, String> headerMap = new HashMap<String, String>();
 
-	/**  当前页  */
-	private Integer pageNum;
-	
-	/**  每页显示多少条  */
-	private Integer pageSize;
-	
-	
-	public Integer getPageNum() {
-		return pageNum;
-	}
-
-	public void setPageNum(Integer pageNum) {
-		this.pageNum = pageNum;
-	}
-
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
 	public Long getUserId() {
 		return userId;
 	}
