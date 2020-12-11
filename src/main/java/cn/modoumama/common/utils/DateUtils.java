@@ -804,8 +804,8 @@ public class DateUtils {
 			calendar.set(Calendar.SECOND, 0);
 			calendar.set(Calendar.MILLISECOND, 0);
 	        int y,M,d,H,m,s;
-	        if(mat.group(2) != null || mat.group(10) != null || mat.group(16) != null || mat.group(22) != null){
-	       	 y = Integer.parseInt(mat.group(2) != null?mat.group(2):mat.group(10)!=null?mat.group(10):mat.group(16)!=null?mat.group(16):mat.group(22));
+	        if(mat.group(2) != null || mat.group(10) != null || mat.group(17) != null){
+	       	 y = Integer.parseInt(mat.group(2) != null?mat.group(2):mat.group(10)!=null?mat.group(10):mat.group(17));
 	       	 calendar.set(Calendar.YEAR, y);
 	        }
 	        if(mat.group(3) != null || mat.group(12) != null || mat.group(19) != null){
