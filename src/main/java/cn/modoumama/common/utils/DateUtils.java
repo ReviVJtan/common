@@ -716,7 +716,7 @@ public class DateUtils {
 	 * @param millisecond   按时间差值 ，1秒1000毫米
 	 * @return
 	 */
-	public static Integer  millisecondDifference(Date currDate,Date oldDate,Integer millisecond){
+	public static Integer  millisecondDifference(Date currDate,Date oldDate,Long millisecond){
 		Long curr =  currDate.getTime();
 		Long old = oldDate.getTime();
 		Long tmp = (curr-old)/millisecond;
@@ -834,11 +834,11 @@ public class DateUtils {
 	}
 	
 	public static class TimeMillisecond{
-		public static final Integer SECOND = 1000;
-		public static final Integer MINUTE = 60*SECOND;
-		public static final Integer HOUR = 60*MINUTE;
-		public static final Integer DAY = 24*HOUR;
-		public static final Integer THREE_DAYS = 3*DAY;
-		public static final Integer WEEK = 7*DAY;
+		public static final Long SECOND = 1000L;
+		public static final Long MINUTE = 60*SECOND;
+		public static final Long HOUR = 60*MINUTE;
+		public static final Long DAY = 24*HOUR;
+		public static final Long THREE_DAYS = 3*DAY;
+		public static final Long WEEK = 7*DAY;
 	}
 }
