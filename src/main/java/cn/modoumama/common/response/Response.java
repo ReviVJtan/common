@@ -1,11 +1,10 @@
 package cn.modoumama.common.response;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import cn.modoumama.common.ErrDetailInfo;
@@ -33,8 +32,8 @@ public class Response implements Serializable {
 	/** 错误信息列表 */
 	private List<ErrDetailInfo> errInfoList = null;
 
-	/** 异常错误信息 */
-	private String exception = null;
+	/** 自定义返回数据 */
+	private JSON date;
 
 	/**
 	 * 累积添加错误信息，同时增长errorCount值
@@ -64,28 +63,8 @@ public class Response implements Serializable {
 		successCount = 0;
 	}
 
-	public void setException(Exception e) {
-		try {
-			if (e != null) {
-				StringWriter sw = new StringWriter();
-				e.printStackTrace(new PrintWriter(sw, true));
-				String str = sw.toString();
-				exception = str;
-			}
-		} catch (Exception ex) {
-		}
-	}
-
 	public Integer getSuccessCount() {
 		return successCount;
-	}
-
-	public String getException() {
-		return exception;
-	}
-
-	public void setException(String exception) {
-		this.exception = exception;
 	}
 
 	public void setSuccessCount(Integer successCount) {
@@ -108,4 +87,11 @@ public class Response implements Serializable {
 		this.errInfoList = errInfoList;
 	}
 
+	public JSON getDate() {
+		return date;
+	}
+
+	public void setDate(JSON date) {
+		this.date = date;
+	}
 }
