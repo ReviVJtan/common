@@ -251,6 +251,22 @@ public static String getFileSuffix(String fileName) {
 			return toUpperCase(ss.substring(0, 1)) + ss.substring(1);
 		}
 	}
+	
+
+	/**
+	 * 获取唯一串<br>
+	 * <br>  
+	 * 创建人：邓强   <br>
+	 * 创建时间：2017年10月30日 上午10:39:22    <br> 
+	 * 修改人：  <br>
+	 * 修改时间：2017年10月30日 上午10:39:22   <br>  
+	 * 修改备注：     <br> 
+	 * @return
+	 */
+	public static String getUnique() {
+		return UUID.randomUUID().toString().replaceAll("-", "");
+	}
+	
 	/**
 	 * @FuncName getToken
 	 * @description 获取token
@@ -263,7 +279,7 @@ public static String getFileSuffix(String fileName) {
 		StringBuffer buf = new StringBuffer("");
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(UUID.randomUUID().toString().replaceAll("-", "").getBytes());
+			md.update(getUnique().getBytes());
 			byte b[] = md.digest();
 			int i;
 			for (int offset = 0; offset < b.length; offset++) {
