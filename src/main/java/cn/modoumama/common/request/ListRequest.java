@@ -8,9 +8,9 @@ package cn.modoumama.common.request;
 public class ListRequest extends Request {
 	private static final long serialVersionUID = 8029099338063271641L;
 	/** 第几页 */
-	private Integer   page;
+	private Integer   page =1;
 	/** 每页条数 */
-	private Integer   rows;
+	private Integer   rows = 10;
 	/** 排序的属性*/
 	private String   sort;
 	/** 倒序desc  顺序 asc */
@@ -21,7 +21,9 @@ public class ListRequest extends Request {
 	}
 	
 	public void setPage(Integer page) {
-		this.page = page;
+		if(page != null){
+			this.page = page;
+		}
 	}
 	
 	public Integer getRows() {
@@ -29,7 +31,9 @@ public class ListRequest extends Request {
 	}
 	
 	public void setRows(Integer rows) {
-		this.rows = rows;
+		if(rows != null){
+			this.rows = rows;
+		}
 	}
 	
 	public String getSort() {
