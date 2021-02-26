@@ -665,6 +665,19 @@ public class AliyunOOSUtil {
      * @return 文件url
      * @Description: 文件上传
      */
+    public static String uploadFile(String baiduEdit) {
+        
+    	
+    	return "";
+    }
+    
+    /**
+     * @param input    输入流
+     * @param fileName 文件名(可以是url形式a/b/c.txt,开头不能是/)
+     * @param lenth    文件大小(字节数)
+     * @return 文件url
+     * @Description: 文件上传
+     */
     public static String uploadFile(InputStream input, String fileName, long lenth) {
         logger.info("文件上传到阿里云");
 
