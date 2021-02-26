@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -668,18 +669,40 @@ public class AliyunOOSUtil {
     public static String uploadBaidu(String baiduEdit,String dir) {
         ////{"state": "SUCCESS","title": "20170303_1488502564030022030.jpg","original": "joinplan1.jpg","type": ".jpg","url": "/static/upload/file/20170303_1488502564030022030.jpg","size": "38928"}
     	JSONObject jsonB = JSONObject.parseObject(baiduEdit);
-    	String url = jsonB.getString("url");
-    	if(StringUtils.isNotBlank(url)){
-    		String fileUrl = StringUtils.getPathNotEnd(PathUtil.PROJECT_PATH)+url;
-        	String fileName = dir+jsonB.getString("url");
-        	File file = new File(fileUrl);
-        	url = uploadFile(file,fileName);
-        	jsonB.put("url", url);
+    	System.out.println(baiduEdit);
+    	JSONArray list = jsonB.getJSONArray("list");
+    	if(list != null){
+    		for (Object object : list) {
+    			JSONObject jsonF = (JSONObject) object;
+    			String url = jsonF.getString("url");
+        		url = uploadBaiduFiles(url, dir);
+        		if(StringUtils.isNotBlank(url)){
+        			jsonF.put("url", url);
+        		}
+			}
+    	}else{
+    		String url = jsonB.getString("url");
+    		url = uploadBaiduFiles(url, dir);
+    		if(StringUtils.isNotBlank(url)){
+    			jsonB.put("url", url);
+    		}
+    		
     	}
     	
     	return jsonB.toJSONString();
     }
-    
+    public static String uploadBaiduFiles(String url,String dir) {
+    	if(StringUtils.isNotBlank(url)){
+    		String fileUrl = StringUtils.getPathNotEnd(PathUtil.PROJECT_PATH)+url;
+        	String fileName = dir+url;
+        	File file = new File(fileUrl);
+        	url = uploadFile(file,fileName);
+        	if(StringUtils.isNotBlank(url)){
+        		file.deleteOnExit();
+        	}
+    	}
+    	return url;
+    }
     /**
      * @param input    输入流
      * @param fileName 文件名(可以是url形式a/b/c.txt,开头不能是/)
