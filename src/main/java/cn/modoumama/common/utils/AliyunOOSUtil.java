@@ -665,10 +665,15 @@ public class AliyunOOSUtil {
      * @return 文件url
      * @Description: 文件上传
      */
-    public static String uploadFile(String baiduEdit) {
-        
-    	
-    	return "";
+    public static String uploadBaidu(String baiduEdit,String dir) {
+        ////{"state": "SUCCESS","title": "20170303_1488502564030022030.jpg","original": "joinplan1.jpg","type": ".jpg","url": "/static/upload/file/20170303_1488502564030022030.jpg","size": "38928"}
+    	JSONObject jsonB = JSONObject.parseObject(baiduEdit);
+    	String fileUrl = StringUtils.getPathNotEnd(PathUtil.PROJECT_PATH)+jsonB.getString("url");
+    	String fileName = dir+jsonB.getString("url");
+    	File file = new File(fileUrl);
+    	String url = uploadFile(file,fileName);
+    	jsonB.put("url", url);
+    	return jsonB.toJSONString();
     }
     
     /**
