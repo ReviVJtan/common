@@ -3,25 +3,28 @@ package cn.modoumama.common.utils;
 import java.io.Serializable;
 import java.util.List;
 
-public class Tree<E> implements Serializable{
+public class Tree<E> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	protected String text;
-	 
+
 	protected boolean expanded;
-	 
+
 	protected List<E> children;
-	 
+
 	protected String id;
-	 
+
 	protected String pid;
-	
+
 	protected String iconCls;
-	
-	protected boolean isRoot ;
-	
-	public Tree(){
-		
+
+	protected boolean isRoot;
+
+	// 资源图标
+	protected String icon;
+
+	public Tree() {
+
 	}
 
 	public String getText() {
@@ -80,5 +83,12 @@ public class Tree<E> implements Serializable{
 		this.iconCls = iconCls;
 	}
 
-		
+	public String getIcon() {
+		return this.icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon == null ? null : icon.trim();
+	}
+
 }
