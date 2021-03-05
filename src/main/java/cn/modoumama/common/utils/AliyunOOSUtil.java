@@ -52,14 +52,19 @@ import cn.modoumama.common.exception.RequiredException;
  */
 public class AliyunOOSUtil {
 	private static Logger logger = LoggerFactory.getLogger(AliyunOOSUtil.class);
-    // OSS域名，如http://oss-cn-hangzhou.aliyuncs.com
-    public static final String endpoint = ConfigProperty.getProperty("oss.endpoint");
+    // OSS域名，如oss-cn-beijing
+    public static String endpoint;
     // AccessKey请登录https://ak-console.aliyun.com/#/查看
-    private static final String accessKeyId = ConfigProperty.getProperty("oss.accessKeyId");
-    private static final String accessKeySecret = ConfigProperty.getProperty("oss.accessKeySecret");
+    private static String accessKeyId;
+    private static String accessKeySecret;
     // 你之前创建的bucket，确保这个bucket已经创建
-    public static final String bucketName = ConfigProperty.getProperty("oss.bucketName");
-    private static String bucketUrl = ConfigProperty.getProperty("oss.url");
+    public static String bucketName;
+    //阿里云端点的域名
+    private static String endpointUrl;
+    //阿里云实例的域名
+    private static String bucketUrl;
+    //自定义域名
+    private static String ourUrl;
     //上传时间戳
     private static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
@@ -88,6 +93,40 @@ public class AliyunOOSUtil {
     }
     
     static{
+    	try {
+			endpoint = ConfigProperty.getProperty("oss.endpoint");
+			accessKeyId = ConfigProperty.getProperty("oss.accessKeyId");
+			accessKeySecret = ConfigProperty.getProperty("oss.accessKeySecret");
+			bucketName = ConfigProperty.getProperty("oss.bucketName");
+			endpointUrl = "http://"+endpoint+".aliyuncs.com";
+	    	bucketUrl = "https://" + bucketName + "." + endpoint + ".aliyuncs.com";
+		} catch (Exception e) {
+			StringBuffer oss = new StringBuffer();
+			oss.append("需要在config.propertiesz中配置一下设置！").append("\r\n");
+			oss.append("oss.accessKeyId=您的AccessKey").append("\r\n");
+			oss.append("oss.accessKeySecret=您的accessKeySecret").append("\r\n");
+			oss.append("oss.endpoint=您的OSS端点如：oss-cn-beijing").append("\r\n");
+			oss.append("oss.bucketName=您的OSS实例名").append("\r\n");
+			oss.append("#选填").append("\r\n");
+			oss.append("oss.url=在OSS上自定义的域名").append("\r\n");
+			throw new RuntimeException(oss.toString());
+		}
+    	String ourUrlStr;
+		try {
+			ourUrlStr = ConfigProperty.getProperty("oss.url");
+			if(StringUtils.isBlank(ourUrlStr)){
+	    		ourUrl = bucketUrl;
+	    	}else{
+	    		ourUrl = ConfigProperty.getProperty("oss.url");
+	    	}
+		} catch (Exception e) {
+			ourUrl = bucketUrl;
+		}
+    	
+    	
+    	
+    	
+    	
     	getInstance();
     	init();
     }
@@ -96,21 +135,18 @@ public class AliyunOOSUtil {
      * @Description: 初始化
      */
     private static void init() {
-        String endpoint = "http://"+ConfigProperty.getProperty("oss.endpoint")+".aliyuncs.com";
-        client = new OSSClient(endpoint, accessKeyId, accessKeySecret);
+        client = new OSSClient(endpointUrl, accessKeyId, accessKeySecret);
     }
 
     /**
      * ********************************** 文件上传签名start ******************************************
      */
     public static Map<String, String> getSigna() throws Exception {
-        // 提交表单的URL为bucket域名
-        String urlStr = "http://" + bucketName + "." + endpoint + ".aliyuncs.com";
 
         // 表单域
         Map<String, String> formFields = new LinkedHashMap<String, String>();
 
-        formFields.put("host", urlStr);
+        formFields.put("host", ourUrl);
         // OSSAccessKeyId
         formFields.put("accessid", accessKeyId);
         //失效时间时间30分钟
@@ -669,7 +705,6 @@ public class AliyunOOSUtil {
     public static String uploadBaidu(String baiduEdit,String dir) {
         ////{"state": "SUCCESS","title": "20170303_1488502564030022030.jpg","original": "joinplan1.jpg","type": ".jpg","url": "/static/upload/file/20170303_1488502564030022030.jpg","size": "38928"}
     	JSONObject jsonB = JSONObject.parseObject(baiduEdit);
-    	System.out.println(baiduEdit);
     	JSONArray list = jsonB.getJSONArray("list");
     	if(list != null){
     		for (Object object : list) {
@@ -713,7 +748,7 @@ public class AliyunOOSUtil {
     public static String uploadFile(InputStream input, String fileName, long lenth) {
         logger.info("文件上传到阿里云");
 
-        String result = bucketUrl + fileName;                    //返回OSS文件地址 绝对地址
+        String result = ourUrl + fileName;                    //返回OSS文件地址 绝对地址
 
         ObjectMetadata objectMeta = new ObjectMetadata();    //OSS上传
         objectMeta.setContentLength(lenth);
