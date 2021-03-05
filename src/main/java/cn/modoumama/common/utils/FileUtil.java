@@ -111,14 +111,14 @@ public class FileUtil {
 			}
 
 			fileName = UUID.randomUUID().toString().replace("-", "") + fileEx;
-			File targetFile = new File(PathUtil.FILE_SAVE_PATH, fileName);
+			File targetFile = new File(FileSavePathUtils.FILE_SAVE_PATH, fileName);
 			if (!targetFile.exists()) {
 				targetFile.mkdirs();
 			}
 			// 保存
 			try {
 				file.transferTo(targetFile);
-				hUrl = PathUtil.FILE_URL_PATH + fileName;
+				hUrl = FileSavePathUtils.FILE_URL_PATH + fileName;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

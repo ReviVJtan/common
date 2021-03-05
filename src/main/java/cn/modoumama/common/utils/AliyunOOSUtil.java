@@ -65,6 +65,8 @@ public class AliyunOOSUtil {
     private static String bucketUrl;
     //自定义域名
     private static String ourUrl;
+    //文件保存的路径
+    private static String keyPath;
     //上传时间戳
     private static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
@@ -97,6 +99,7 @@ public class AliyunOOSUtil {
 			endpoint = ConfigProperty.getProperty("oss.endpoint");
 			accessKeyId = ConfigProperty.getProperty("oss.accessKeyId");
 			accessKeySecret = ConfigProperty.getProperty("oss.accessKeySecret");
+			keyPath = ConfigProperty.getProperty("oss.keyPath");
 			bucketName = ConfigProperty.getProperty("oss.bucketName");
 			endpointUrl = "http://"+endpoint+".aliyuncs.com";
 	    	bucketUrl = "https://" + bucketName + "." + endpoint + ".aliyuncs.com";
@@ -105,6 +108,7 @@ public class AliyunOOSUtil {
 			oss.append("需要在config.propertiesz中配置一下设置！").append("\r\n");
 			oss.append("oss.accessKeyId=您的AccessKey").append("\r\n");
 			oss.append("oss.accessKeySecret=您的accessKeySecret").append("\r\n");
+			oss.append("oss.keyPath=默认保存路径").append("\r\n");
 			oss.append("oss.endpoint=您的OSS端点如：oss-cn-beijing").append("\r\n");
 			oss.append("oss.bucketName=您的OSS实例名").append("\r\n");
 			oss.append("#选填").append("\r\n");
@@ -648,7 +652,9 @@ public class AliyunOOSUtil {
             }
            
             if(StringUtils.isNotBlank(dir)){
-            	dir =DateUtils.dateFormat(new Date(), "yyyy/MM/dd");
+            	dir =StringUtils.getPathEnd(StringUtils.getPathNotStart(dir));
+            }else{
+            	dir = StringUtils.getPathEnd(StringUtils.getPathNotStart(keyPath));
             }
             
             //新的文件名
