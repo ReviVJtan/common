@@ -754,7 +754,7 @@ public class AliyunOOSUtil {
     public static String uploadFile(InputStream input, String fileName, long lenth) {
         logger.info("文件上传到阿里云");
 
-        String result = ourUrl + fileName;                    //返回OSS文件地址 绝对地址
+        String result = StringUtils.getPathEnd(ourUrl) + StringUtils.getPathNotStart(fileName);                    //返回OSS文件地址 绝对地址
 
         ObjectMetadata objectMeta = new ObjectMetadata();    //OSS上传
         objectMeta.setContentLength(lenth);
