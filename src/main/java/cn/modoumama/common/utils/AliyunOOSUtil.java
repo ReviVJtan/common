@@ -117,7 +117,7 @@ public class AliyunOOSUtil {
 			if(StringUtils.isBlank(ourUrlStr)){
 	    		ourUrl = bucketUrl;
 	    	}else{
-	    		ourUrl = ConfigProperty.getProperty("oss.url");
+	    		ourUrl = ourUrlStr;
 	    	}
 		} catch (Exception e) {
 			ourUrl = bucketUrl;
