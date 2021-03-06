@@ -2,8 +2,11 @@ package cn.modoumama.common.utils;
  
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +48,35 @@ public class ConfigProperty {
 			return format.format(args);
 		}
 		return result;
+	}
+	
+	/**
+	 * 获取多条配置<br>
+	 * <br>  
+	 * 创建人：邓强   <br>
+	 * 创建时间：2017年11月29日 下午3:06:10    <br> 
+	 * 修改人：  <br>
+	 * 修改时间：2017年11月29日 下午3:06:10   <br>  
+	 * 修改备注：     <br> 
+	 * @param regex  正则:.*asb.*
+	 * @return
+	 */
+	public static Map<String, String> getPropertys(String regex){
+		Map<String, String> configValue = new HashMap<>();
+		Set<String> keys = resourceBundle.keySet();
+		if(StringUtils.isNotBlank(regex)){
+			
+			for (String key : keys) {
+				 if(key.matches(regex)){
+					 configValue.put(key, resourceBundle.getString(key));
+		         }
+			}
+		}else{
+			for (String key : keys) {
+				configValue.put(key, resourceBundle.getString(key));
+			}
+		}
+		return configValue;
 	}
 	
 	public static void main(String args[]){
