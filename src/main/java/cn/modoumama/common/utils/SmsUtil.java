@@ -1,19 +1,20 @@
 package cn.modoumama.common.utils;
-import org.apache.commons.lang3.StringUtils;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.taobao.api.DefaultTaobaoClient;
-import com.taobao.api.TaobaoClient;
-import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
-import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 /**
  * 
   * @ClassName: SmsUtil
@@ -21,6 +22,10 @@ import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
  */
 public class SmsUtil {
 	private final static Log log = LogFactory.getLog(SmsUtil.class);
+	
+	//初始化ascClient需要的几个参数
+	private final static String product = "Dysmsapi";//短信API产品名称（短信产品名固定，无需修改）
+	private final static String domain = "dysmsapi.aliyuncs.com";//短信API产品域名（接口地址固定，无需修改）
 	
 	/**
 	  * @Description: 阿里短信发送短信
@@ -30,15 +35,12 @@ public class SmsUtil {
 	  * @param smsSign					示例：身份验证
 	  * @return  true/false(成功/失败)
 	 */
-	public static boolean sendByAliyun(String phone, String smsTemplateCode, String smsParam, String smsSign){
-		boolean result = true;
+	public static SendSmsResponse sendByAliyun(String phone, String smsTemplateCode, String smsParam, String smsSign){
+		SendSmsResponse sendSmsResponse = null;
 		try {
 			//设置超时时间-可自行调整
 			System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
 			System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-			//初始化ascClient需要的几个参数
-			final String product = "Dysmsapi";//短信API产品名称（短信产品名固定，无需修改）
-			final String domain = "dysmsapi.aliyuncs.com";//短信API产品域名（接口地址固定，无需修改）
 			//替换成你的AK
 			final String accessKeyId = getText("sms.aliyun.accessKeyId");//你的accessKeyId,参考本文档步骤2
 			final String accessKeySecret = getText("sms.aliyun.accessKeySecret");//你的accessKeySecret，参考本文档步骤2
@@ -65,62 +67,50 @@ public class SmsUtil {
 			 //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
 			 request.setOutId("yourOutId");
 			//请求失败这里会抛ClientException异常
-			SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-			if(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
-				//请求成功
-				result = true;
-			}else{
-				result = false;
-			}
-			
-			return result;
+			sendSmsResponse = acsClient.getAcsResponse(request);
 		} catch (Exception e) {
 			 log.error("阿里短信发送异常",e);
 			 throw new RuntimeException("阿里短信发送异常");
 		}
-	}
-
-	/**
-	  * @Description: 阿里大鱼发送短信
-	  * @param phone  电话  				示例：15871383472
-	  * @param smsTemplateCode			示例：SMS_3685120
-	  * @param smsParam					示例：{\"code\":\"1234\"}
-	  * @param smsSign					示例：身份验证
-	  * @return  true/false(成功/失败)
-	 */
-	public static boolean sendByAlidayu(String phone, String smsTemplateCode, String smsParam, String smsSign){
-		boolean result = true;
-		try {
-			String appkey = getText("sms.alidayu.appkey");
-			String secret = getText("sms.alidayu.secret");
-			String addr = getText("sms.alidayu.addr");
-			TaobaoClient client = new DefaultTaobaoClient(addr, appkey, secret);
-			AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
-			req.setSmsType("normal");
-			req.setSmsFreeSignName(smsSign);
-			//参数
-			req.setSmsParamString(smsParam);
-			req.setRecNum(phone);
-			req.setSmsTemplateCode(smsTemplateCode);
-			AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req, secret);
-			
-			if(rsp != null && StringUtils.isNotBlank(rsp.getBody())){
-				//返回错误信息
-				if(rsp.getBody().indexOf("error_response") != -1){
-					log.error(rsp.getBody());
-					result = false;
-				}
-			}else{
-				result = true;
-			}
-			
-			return result;
-		} catch (Exception e) {
-			 log.error("阿里大鱼发送短信异常",e);
-			 throw new RuntimeException("阿里大鱼发送短信异常");
-		}
-	}
 		
+		return sendSmsResponse;
+	}
+	
+	  public static QuerySendDetailsResponse querySendDetails(String phone,Date sendDate,String bizId) throws ClientException {
+
+	        //可自助调整超时时间
+	        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+	        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+
+	      //替换成你的AK
+			final String accessKeyId = getText("sms.aliyun.accessKeyId");//你的accessKeyId,参考本文档步骤2
+			final String accessKeySecret = getText("sms.aliyun.accessKeySecret");//你的accessKeySecret，参考本文档步骤2
+	        
+	        //初始化acsClient,暂不支持region化
+	        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+	        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+	        IAcsClient acsClient = new DefaultAcsClient(profile);
+
+	        //组装请求对象
+	        QuerySendDetailsRequest request = new QuerySendDetailsRequest();
+	        //必填-号码
+	        request.setPhoneNumber(phone);
+	        //可选-流水号
+	        request.setBizId(bizId);
+	        //必填-发送日期 支持30天内记录查询，格式yyyyMMdd
+	        SimpleDateFormat ft = new SimpleDateFormat("yyyyMMdd");
+	        request.setSendDate(ft.format(sendDate));
+	        //必填-页大小
+	        request.setPageSize(10L);
+	        //必填-当前页码从1开始计数
+	        request.setCurrentPage(1L);
+
+	        //hint 此处可能会抛出异常，注意catch
+	        QuerySendDetailsResponse querySendDetailsResponse = acsClient.getAcsResponse(request);
+
+	        return querySendDetailsResponse;
+	    }
+	  
 	/**
 	 * 
 	  * @Description: 获取资源配置
