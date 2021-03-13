@@ -31,15 +31,12 @@ import javax.xml.crypto.dsig.SignatureMethod;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
-
-import cn.modoumama.common.exception.RequiredException;
 
 /**
  * 类描述：阿里云工具类<br>
@@ -50,44 +47,40 @@ import cn.modoumama.common.exception.RequiredException;
  * 修改备注：     <br>
  * @version   V1.0
  */
-public class AliyunOOSUtil {
-	private static Logger logger = LoggerFactory.getLogger(AliyunOOSUtil.class);
+public class AliyunOOSUtils {
+	private static Logger logger = LoggerFactory.getLogger(AliyunOOSUtils.class);
     // OSS域名，如oss-cn-beijing
-    public static String endpoint;
+    protected static String endpoint;
     // AccessKey请登录https://ak-console.aliyun.com/#/查看
-    private static String accessKeyId;
-    private static String accessKeySecret;
+    protected static String accessKeyId;
+    protected static String accessKeySecret;
     // 你之前创建的bucket，确保这个bucket已经创建
-    public static String bucketName;
+    protected static String bucketName;
     //阿里云端点的域名
-    private static String endpointUrl;
+    protected static String endpointUrl;
     //阿里云实例的域名
-    private static String bucketUrl;
+    protected static String bucketUrl;
     //自定义域名
-    private static String ourUrl;
+    protected static String ourUrl;
     //文件保存的路径
-    private static String keyPath;
+    protected static String keyPath;
     //上传时间戳
-    private static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    protected static final String ISO8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    private static final String ENCODE_TYPE = "UTF-8";
+    protected static final String ENCODE_TYPE = "UTF-8";
 
-    private static AliyunOOSUtil aliyunOOSUtil = null;
+    protected static AliyunOOSUtils aliyunOOSUtil = null;
     
     /**
      * OSSClient对象
      */
-    private static OSSClient client;
+    protected static OSSClient client;
 
-
-    private AliyunOOSUtil() {
-    }
-
-    public static AliyunOOSUtil getInstance() {
+    public static AliyunOOSUtils getInstance() {
         if (aliyunOOSUtil == null) {
-            synchronized (AliyunOOSUtil.class) {
+            synchronized (AliyunOOSUtils.class) {
                 if (aliyunOOSUtil == null) {
-                    aliyunOOSUtil = new AliyunOOSUtil();
+                    aliyunOOSUtil = new AliyunOOSUtils();
                 }
             }
         }
@@ -327,349 +320,7 @@ public class AliyunOOSUtil {
     /**************************************************** 媒体服务end *****************************************************/
     public static final Long M = 1024 * 1024L;
     
-    /**
-     * 保存压缩文件<br>
-     * <br>  
-     * 创建人：邓强   <br>
-     * 创建时间：2017年11月20日 上午10:42:52    <br> 
-     * 修改人：  <br>
-     * 修改时间：2017年11月20日 上午10:42:52   <br>  
-     * 修改备注：     <br> 
-     * @param file
-     * @return
-     */
-    public static String saveCompressFile(MultipartFile file){
-    	return saveCompressFile(file, null, null);
-    }
-
-    /**
-     * 保存压缩文件<br>
-     * <br>  
-     * 创建人：邓强   <br>
-     * 创建时间：2017年11月20日 上午10:34:47    <br> 
-     * 修改人：  <br>
-     * 修改时间：2017年11月20日 上午10:34:47   <br>  
-     * 修改备注：     <br> 
-     * @param file
-     * @param dir	保存文件的路径
-     * @return
-     */
-    public static String saveCompressFile(MultipartFile file, String dir){
-    	return saveCompressFile(file, null, dir);
-    }
     
-    /**
-     * 保存压缩文件<br>
-     * <br>  
-     * 创建人：邓强   <br>
-     * 创建时间：2017年11月20日 上午10:31:48    <br> 
-     * 修改人：  <br>
-     * 修改时间：2017年11月20日 上午10:31:48   <br>  
-     * 修改备注：     <br> 
-     * @param file
-     * @param maxSize	设置上传文件最大值  
-     * @param dir		保存文件的路径
-     * @return
-     */
-	public static String saveCompressFile(MultipartFile file, Long maxSize, String dir){
-        // 允许上传的文件格式的列表  
-		final String[] allowedExt = new String[] { ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso"}; 
-		return uploadFile(file, maxSize, allowedExt, dir);
-	}
-	
-	/**
-	 * 保存文档文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:43:20    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:43:20   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @return
-	 */
-	public static String saveDocFile(MultipartFile file){
-		return saveDocFile(file, null, null);
-	}
-	/**
-	 * 保存文档文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:04    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:04   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveDocFile(MultipartFile file, String dir){
-		return saveDocFile(file, null, dir);
-	}
-	
-	/**
-	 * 保存文档文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:15    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:15   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param maxSize	文件的最大值
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveDocFile(MultipartFile file, Long maxSize, String dir){
-        // 允许上传的文件格式的列表  
-		final String[] allowedExt = new String[] {".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml"}; 
-		return uploadFile(file, maxSize, allowedExt, dir);
-	}
-	
-	/**
-	 * 保存视频文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:43:46    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:43:46   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @return
-	 */
-	public static String saveVideoFile(MultipartFile file){
-		return saveVideoFile(file, null, null);
-	}
-	
-	/**
-	 * 保存视频文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:23    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:23   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveVideoFile(MultipartFile file, String dir){
-		return saveVideoFile(file, null, dir);
-	}
-	
-	/**
-	 * 保存视频文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:35    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:35   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param maxSize	文件的最大值
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveVideoFile(MultipartFile file, Long maxSize, String dir){
-        // 允许上传的文件格式的列表  
-		final String[] allowedExt = new String[] { ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg",
-		        ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid"}; 
-		return uploadFile(file, maxSize, allowedExt, dir);
-	}
-	
-	/**
-	 * 保存图片<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:44:22    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:44:22   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @return
-	 */
-	public static String saveImgageFile(MultipartFile file){
-		return saveImgageFile(file, null, null);
-	}
-	
-	/**
-	 * 保存图片<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:42    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:42   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveImgageFile(MultipartFile file, String dir){
-		return saveImgageFile(file, null, dir);
-	}
-	
-	/**
-	 * 保存图片<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:35:55    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:35:55   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param maxSize	文件的最大值
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveImgageFile(MultipartFile file, Long maxSize, String dir){
-        // 允许上传的文件格式的列表  
-		final String[] allowedExt = new String[] { "jpg", "jpeg", "gif", "png",  "swf", "bmp"}; 
-		return uploadFile(file, maxSize, allowedExt, dir);
-	}
-	
-	/**
-	 * 保存文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:45:12    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:45:12   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @return
-	 */
-	public static String saveFile(MultipartFile file){
-		return uploadFile(file, null, null, null);
-	}
-	
-	/**
-	 * 保存文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:36:04    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:36:04   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveFile(MultipartFile file, String dir){
-		return uploadFile(file, null, null, dir);
-	}
-	
-	/**
-	 * 保存文件<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:36:20    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:36:20   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param maxSize	文件的最大值
-	 * @param dir	保存文件的路径
-	 * @return
-	 */
-	public static String saveFile(MultipartFile file, Long maxSize , String dir){
-		return uploadFile(file, maxSize, null, dir);
-	}
-    
-    /**
-     * 上传到阿里云上传文件到<br>
-     * <br>  
-     * 创建人：邓强   <br>
-     * 创建时间：2017年11月20日 上午9:14:29    <br> 
-     * 修改人：  <br>
-     * 修改时间：2017年11月20日 上午9:14:29   <br>  
-     * 修改备注：     <br> 
-     * @param file			上传的文件
-     * @param maxSize		文件的最大值
-     * @param allowedExt	允许上传的文件格式的列表  
-     * @return
-     */
-	public static String uploadFile(MultipartFile file, Long maxSize, String[] allowedExt, String dir){
-		String hUrl = null;
-		if(file!=null){
-			if(verification(file, maxSize, allowedExt)){
-				hUrl = uploadFile(file,dir);
-			}
-		}
-		
-		return hUrl;
-	}
-
-	/**
-	 * 验证文件大小，和后缀名<br>
-	 * <br>  
-	 * 创建人：邓强   <br>
-	 * 创建时间：2017年11月20日 上午10:27:29    <br> 
-	 * 修改人：  <br>
-	 * 修改时间：2017年11月20日 上午10:27:29   <br>  
-	 * 修改备注：     <br> 
-	 * @param file
-	 * @param maxSize
-	 * @param allowedExt
-	 * @return
-	 */
-	public static boolean verification(MultipartFile file, Long maxSize, String[] allowedExt){
-		boolean flag = false;
-		if(file!=null){
-			String fileName =  file.getOriginalFilename();
-			if(!StringUtils.isBlank(fileName)){
-				if(file.getSize() <= maxSize){
-					
-					if(allowedExt != null){
-						//获取后缀
-						String fileEx;
-						try {
-							fileEx = fileName.substring(fileName.lastIndexOf("."));
-						} catch (Exception e1) {
-							throw new RequiredException("：上传文件没有后缀名");
-						}
-						
-						if(!(ArrayUtil.isContain(fileEx.substring(1), allowedExt))){
-							 throw new RequiredException("：上传文件格式不合法");
-						}
-					}
-					
-					flag = true;
-				}
-			}
-		}
-		return flag;
-	}
-	
-   
-
-    public static String uploadFile(MultipartFile file, String dir){
-    	String fileName = file.getOriginalFilename();
-        if (file != null && StringUtils.isNotBlank(fileName)) {
-            //获取后缀
-            String fileEx = "";
-            if(fileName.lastIndexOf(".") != -1){
-            	fileEx = fileName.substring(fileName.lastIndexOf("."));
-            }
-           
-            if(StringUtils.isNotBlank(dir)){
-            	dir =StringUtils.getPathEnd(StringUtils.getPathNotStart(dir));
-            }else{
-            	dir = StringUtils.getPathEnd(StringUtils.getPathNotStart(keyPath));
-            }
-            
-            //新的文件名
-            fileName = dir + UUID.randomUUID().toString().replace("-", "") + fileEx;
-            //存储到oss
-            try {
-				fileName = uploadFile(file.getInputStream(), fileName, file.getBytes().length * 1L);
-				return fileName;
-			} catch (IOException e) {
-				throw new RequiredException("文件非法",e);
-			}
-            
-        }
-        return "";
-    }
 
     /**
      * @param content  文件
