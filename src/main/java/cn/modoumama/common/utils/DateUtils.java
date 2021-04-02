@@ -753,6 +753,53 @@ public class DateUtils {
 		
 		return calendar.getTime();
 	}
+	
+	/**
+	 * 以天为单位进行上舍入<br>
+	 * <br>  
+	 * 创建人：邓强   <br>
+	 * 创建时间：2017年12月22日 上午9:03:46    <br> 
+	 * 修改人：  <br>
+	 * 修改时间：2017年12月22日 上午9:03:46   <br>  
+	 * 修改备注：     <br>
+	 * @param date		需要操作的时间
+	 * @return
+	 */
+	public static Date ceilDay(Date date){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.add(Calendar.DATE, 1);
+		
+		return calendar.getTime();
+	}
+	
+	
+	/**
+	 * 以天为单位进行下舍入<br>
+	 * <br>  
+	 * 创建人：邓强   <br>
+	 * 创建时间：2017年12月22日 上午9:04:43    <br> 
+	 * 修改人：  <br>
+	 * 修改时间：2017年12月22日 上午9:04:43   <br>  
+	 * 修改备注：     <br>
+	 * @param date		需要操作的时间
+	 * @return
+	 */
+	
+	public static Date floorDay(Date date){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		
+		return calendar.getTime();
+	}
 	/**
 	 * 字符串转时间
 	 * 支持格式:
