@@ -1,4 +1,4 @@
-package cn.modoumama.common.utils;
+package cn.modoumama.common.utils.validator;
 
 import java.util.Set;
 

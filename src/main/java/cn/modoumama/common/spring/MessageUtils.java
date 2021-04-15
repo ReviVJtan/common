@@ -63,8 +63,13 @@ public class MessageUtils {
 	  * @date 2016-1-19
 	 */
 	public static String getMessage(String key){
-		Locale locale = new Locale("zh", "CN");
-		return  ms.getMessage(key, null, locale);
+		if(key != null){
+			Locale locale = new Locale("zh", "CN");
+			return  ms.getMessage(key, null, locale);
+		}else{
+			return null;
+		}
+		
 	}
 
 }
